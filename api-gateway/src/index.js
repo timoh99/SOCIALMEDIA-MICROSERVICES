@@ -83,10 +83,28 @@ const proxyOptions ={
         return proxyReqOpts
     },
      userResDecorator:(proxyRes,proxyResData, userReq,userRes)=>{
-        Logger.info(`Response received from identity service: ${proxyRes.statusCode}`)
+        Logger.info(`Response received from post service: ${proxyRes.statusCode}`)
         return proxyResData
     }
  }))
+
+  app.use('/v1/media',ValidateToken,proxy(process.env.MEDIA_SERVICE_URL,{
+     ...proxyOptions,
+     proxyReqBodyDecorator:(proxyREqOpts,srcReq)=>{
+        proxyReqOpts.headers['x-user-id']=srcReq.user.userId;
+        if(!srcReq,headers['content-type'].startsWith('multipart/form-data')){
+            proxyReqOpts.headers['content-type'] = application/json;
+        }
+
+        return proxyReqOpts;
+     },
+        userResDecorator:(proxyRes,proxyResData, userReq,userRes)=>{
+        Logger.info(`Response received from media service: ${proxyRes.statusCode}`)
+        return proxyResData
+
+        },
+        pareseReqBody:false
+  }))
 
  //app.use(errorHandler())
 

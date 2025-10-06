@@ -1,7 +1,7 @@
-const Logger = require('../utils/Logger')
+const Logger = require('../utils/Logger');
 
 
-const uploadMedia=  asnyc(req,res)=>{
+const uploadMedia=  async(req,res)=>{
     Logger.info('uploading to cloudinary started')
     try{
         if(!req.file){
@@ -11,7 +11,7 @@ const uploadMedia=  asnyc(req,res)=>{
                 message:"no file found . Please add file and try again "
             })
         }
-        const {originalName , mimeType, buffer}=req.file();
+        const {originalname , mimetype, buffer}=req.file();
         const userId = req.user.userId
 
         Logger.info(`File details: name=${originalName},type${mimeType}`)
@@ -22,8 +22,8 @@ const uploadMedia=  asnyc(req,res)=>{
 
         const newlyCreatedMedia = new Media({
             publicId: cloudinaryUploadResult.public_id,
-            originalName,
-            mimeType,
+            originalName:originalname,
+            mimeType:mimetype,
             url:cloudinaryUploadResult.secure_url,
             userId
         })
@@ -40,7 +40,7 @@ const uploadMedia=  asnyc(req,res)=>{
         
 
     }catch(error){
-     Logger.error("Error creating post", error);
+     Logger.error("Error creating media", error);
      res.status(500).json({
         sucess:false,
         message:'Error creating post'

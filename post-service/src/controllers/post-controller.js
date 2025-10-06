@@ -1,5 +1,5 @@
 const Logger= require('../utils/Logger')
-const Post = require('../models/post')
+const post = require('../models/post') 
 const {}= require('../utils/validator')
 
 
