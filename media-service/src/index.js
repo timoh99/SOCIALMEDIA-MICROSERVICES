@@ -9,6 +9,7 @@ const {mediaRoutes}= require('../routes/media-rotes.js');
 const Logger= require('../utils/Logger.js')
 const {authenticatedRoutes}= require('../middleware/authMiddleware');
 const errorHandler = require('../../identity-service/src/middlewares/errorHandler.js');
+const { connectRabbitMQ, consumeEvent } = require('./utils/rabbitmq.js');
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -61,3 +62,18 @@ app.listen(PORT,()=>{
     Logger.info(`media service is running on port ${PORT}`);
 });
 
+async function startServer(){
+  try {
+     await connectRabbitMQ();
+
+     await consumeEvent('post.deleted')
+
+     app.listen(PORT,()=>{
+        Logger.info(`Media service is running on port: ${PORT}`)
+     })
+  } catch (error) {
+    Logger.info("errror failed connecting to server",error);
+  }
+}
+
+startServer();

@@ -7,7 +7,8 @@ const cors = require('cors')
 const postRoutes= require('./routes/post-routes')
 const errorHandler = require('./middleware/errorHandler')
 const logger = require('./utils/Logger')
-const ratelimit = require('express-rate-limit')
+const ratelimit = require('express-rate-limit');
+const { connectRabbitMQ } = require('./utils/rabbitmq');
 
 const app = express();
 const PORT = process.env.PORT || 3002
@@ -65,7 +66,20 @@ app.listen(PORT,()=>{
     logger.info(`server is up and running on port : ${PORT}`)
 })
 
+async function startserver(){
+    try {
+        await connectRabbitMQ();
+         app.listen(PORT,()=>{
+    logger.info(`server is up and running on port : ${PORT}`)
+})
+    } catch (error) {
+       logger.error("Connection failed",error);
+       process.exit(1); 
+    }
+   
+}
 
+startserver();
 
 
 
