@@ -1,6 +1,6 @@
 const Logger= require('../utils/Logger')
 const post = require('../models/post') 
-const {}= require("../utils/rabbitmq");
+const { publishEvent }= require("../utils/rabbitmq");
 const {validationcreatepost}= require('../utils/validator')
 
 
@@ -31,6 +31,12 @@ const createPost = async (req,res) =>{
             mediaIds :mediaIds || []
         }) 
          await newcreatedPost.save();
+         await publishEvent('post-created',{
+            postId : newcreatedPost.postId.toString(),
+            userId: newcreatedPost.user.toString(),
+            content: newcreatedPost.content,
+            createdAt: newcreatedPost.createdAt
+         });
          await invalidatePostCache(req, newcreatedPost._id.tostring())
          Logger.info("post created sucessfully",newcreatedPost)
          res.status(201).json({

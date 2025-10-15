@@ -15,8 +15,8 @@ const PORT = process.env.PORT || 3002
 
 //db connection
 mongoose.connect(process.env.MONGO_URI).then(()=>
-    logger.info('database connected successfully')).catch((e)=>
-        logger.warn('database connection error:',error.message))
+    logger.info("Database connected succesfully")
+) .catch((error)=>logger.error("database connection failed", error))
     
 
 
