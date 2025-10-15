@@ -7,8 +7,8 @@ const Redis = require('ioredis');
 const Logger = require("./utils/Logger");
 const errorHandler = require("./middleware/errorHandler");
 const {consumeEvent , connectRabbitMQ}= require("./utils/rabbitmq")
-const{searchroutes}= require("../routes/search-routes")
-const handlePostCreated = require("../errorHandler/search-handler");
+const searchroutes= require("./routes/search-routes")
+const {handlePostCreated , handlePostDeleted} = require("./eventsHandler/search-handler");
 
 
  const app = express();

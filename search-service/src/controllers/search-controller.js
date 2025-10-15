@@ -1,9 +1,6 @@
 
-const Logger = require("./utils/Logger")
-const{searchroutes}= require("../routes/search-routes")
-const {errorHandler} =require("../middleware/errorHandler");
-const { connectRabbitMQ } = require("../../../post-service/src/utils/rabbitmq");
-const handlePostCreated = require("../errorHandler/search-handler");
+const Logger = require("../utils/Logger")
+const search = require("../models/search") 
 
 const searchPostController = async(req,res)=>{
     Logger.info("search post endpoint hit");
@@ -36,4 +33,4 @@ $text :{$search:query}
 
 
 
-Module.exports ={searchPostController}
+module.exports ={searchPostController}

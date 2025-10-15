@@ -16,7 +16,7 @@ const upload = multer({
     }
 }).single('file')
 
-Router.post('/upload',authenticatedRequest,(req,res,next)=>{
+router.post('/upload',authenticatedRequest,(req,res,next)=>{
     upload(req,res,function(err){
         if(err instanceof multer.MulterError){
             Logger.error('Multer error while uploading :', error)
@@ -45,4 +45,4 @@ Router.post('/upload',authenticatedRequest,(req,res,next)=>{
 },uploadMedia)
 router.get("/get", authenticatedRequest, getAllMedia);
 
-module.exports= router
+module.exports= router;

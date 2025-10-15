@@ -23,6 +23,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
+    "rate-limit-redis": "^4.2.2",
+    "rate-limiter-flexible": "^8.1.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {

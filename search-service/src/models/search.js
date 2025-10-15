@@ -25,6 +25,7 @@
  },{timestamps:true});
 searchPostSchema.index({content:'text'});
 searchPostSchema.index({createdAt:-1});
-const searchSchema = mongoose.model('search',searchPostSchema);
+const search = mongoose.model('search',searchPostSchema);
 
- module.exports=search
+
+ module.exports=search;

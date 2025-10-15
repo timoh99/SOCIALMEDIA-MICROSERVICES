@@ -1,4 +1,4 @@
-const amqp = require('amqp');
+const amqp = require('amqplib');
 const Logger = require('./Logger');
 
 let connection = null;

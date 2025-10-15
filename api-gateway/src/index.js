@@ -1,8 +1,8 @@
-require('dotenv').config()
+require('dotenv').config();
 const express = require('express')
 const proxy =require('express-http-proxy')
 const Redis =require('ioredis')
-//const {redisClient}=require ('rate-limit-redis')
+//const redisClient=require ('rate-limit-redis')
 const {RedisStore}=require ('rate-limit-redis')
 const {rateLimit}=require('express-rate-limit')
 const Logger = require('./utils/Logger')
@@ -20,8 +20,8 @@ app.use(cors())
 app.use(express());
 
 app.use((req,res,next)=>{
-    logger.info(`Received   ${req.method} requested to ${req.url}`)
-    logger.info(`request body, ${req.body}`)
+    Logger.info(`Received   ${req.method} requested to ${req.url}`)
+    Logger.info(`request body, ${req.body}`)
     next();
 })
 
@@ -31,10 +31,10 @@ const redisClient = new Redis(process.env.REDIS_URL)
 
 //rate limit 
 const rateLimitOptions=rateLimit({
-    windows:15*60*100000,
-    max:50,
+    windowMs:15*60*1000,
+    max:100,
     standardHeaders:true,
-    legacyheasers:true,
+    legacyHeaders:true,
     handler :(req,res)=>{
         Logger.warn(`sensiive endpoint rate limit exceeded for ip:${req.ip}`)
           res.status(429).json({
@@ -43,7 +43,7 @@ const rateLimitOptions=rateLimit({
         })
     },
     store:new RedisStore({
-        sendCommand:(...args)=>redisClient.sendCommand(...args),
+        sendCommand:(...args)=>redisClient.call(...args),
     })
 })
 
@@ -75,7 +75,7 @@ const proxyOptions ={
  }));
 
  //gateway for post service
- app.use('v1/posts', ValidateToken,proxy(process.env.POST_SERVICE_URL,{
+ app.use('/v1/posts', ValidateToken,proxy(process.env.POST_SERVICE_URL,{
     ...proxyOptions,
     proxyReqOptDecorator : (proxyReqOpts,srcReq)=>{
         proxyReqOpts.headers['content-Type'] ='application/json',
@@ -90,7 +90,7 @@ const proxyOptions ={
 
   app.use('/v1/media',ValidateToken,proxy(process.env.MEDIA_SERVICE_URL,{
      ...proxyOptions,
-     proxyReqBodyDecorator:(proxyREqOpts,srcReq)=>{
+     proxyReqBodyDecorator:(proxyReqOpts,srcReq)=>{
         proxyReqOpts.headers['x-user-id']=srcReq.user.userId;
         if(!srcReq,headers['content-type'].startsWith('multipart/form-data')){
             proxyReqOpts.headers['content-type'] = application/json;
@@ -103,9 +103,9 @@ const proxyOptions ={
         return proxyResData
 
         },
-        pareseReqBody:false
+        parseReqBody:false
   }))
-app.use('v1/search', ValidateToken,proxy(process.env.SEARCH_SERVICE_URL,{
+app.use('/v1/search', ValidateToken,proxy(process.env.SEARCH_SERVICE_URL,{
     ...proxyOptions,
     proxyReqOptDecorator : (proxyReqOpts,srcReq)=>{
         proxyReqOpts.headers['content-Type'] ='application/json',
@@ -124,8 +124,8 @@ app.use('v1/search', ValidateToken,proxy(process.env.SEARCH_SERVICE_URL,{
     Logger.info(`identity service is running on port: ${process.env.IDENTITY_SERVICE_URL}`)
     Logger.info(`redis is running on port :${process.env.REDIS_URL}`)
      Logger.info(`  post  service is running on port: ${process.env.POST_SERVICE_URL}`)
-      Logger.info(`  post  service is running on port: ${process.env.MEDIA_SERVICE_URL}`)
-       Logger.info(`  post  service is running on port: ${process.env.SEARCH_SERVICE_URL}`)
+      Logger.info(`  media  service is running on port: ${process.env.MEDIA_SERVICE_URL}`)
+       Logger.info(`  search  service is running on port: ${process.env.SEARCH_SERVICE_URL}`)
  })
 
 
